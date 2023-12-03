@@ -54,7 +54,7 @@ int main() {
         return -1;
     }
 
-    printf("서버가 시작되었습니다.\n");
+    printf("서버가 시작되었습니다... 다른 탭에서 클라이언트를 실행해 주세요\n");
 
     // 클라이언트 연결 수락 반복문
     while (1) {
@@ -98,14 +98,14 @@ void *handle_client(void *arg) {
     // 클라이언트로부터 메시지 수신
     while ((read_len = recv(sock, buffer, BUFFER_SIZE, 0)) > 0) {
         buffer[read_len] = '\0';
-        printf("서버가 받은 채팅 [%s]: %s\n", nickname, buffer); // 서버가 받은 메시지 출력
+    
         // 다른 클라이언트에 메시지 전송
-        char full_message[2 * BUFFER_SIZE];
+        char full_message[BUFFER_SIZE];
         snprintf(full_message, sizeof(full_message), "%s: %s", nickname, buffer);
 
         for(int i = 0; i< MAX_CLIENTS;i++){
             if(clients[i]!= -1)
-                send(clients[i],full_message, (BUFFER_SIZE * 2), 0);
+                send(clients[i],full_message, BUFFER_SIZE, 0);
         }
     }
     
